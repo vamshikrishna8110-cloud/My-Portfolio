@@ -22,6 +22,8 @@ jobs:
       - run: npm run build
         env:
           VITE_OPPORTUNITY_ENDPOINT: ${{ vars.VITE_OPPORTUNITY_ENDPOINT }}
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
       - uses: actions/upload-pages-artifact@v4
         if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
         with:

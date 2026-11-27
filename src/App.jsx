@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react'
-import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, Boxes, BrainCircuit, ChevronDown, Cloud, Code2, Database, GitFork, GraduationCap, BriefcaseBusiness, Mail, Menu, Network, Phone, X } from 'lucide-react'
+import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, Boxes, BrainCircuit, ChevronDown, Cloud, Code2, Database, Download, GitFork, GraduationCap, BriefcaseBusiness, Mail, Menu, Network, Phone, X } from 'lucide-react'
 import { caseStudies, experience, insights, person, projects, skills } from './content'
-import Lab from './Lab'
 import Opportunity from './Opportunity'
+import Architecture from './Architecture'
+import ThemeToggle from './ThemeToggle'
+import MonogramCube from './MonogramCube'
 
 const navigation = [
   ['Home', 'home'],
+  ['Quick View', 'recruiter'],
   ['About', 'about'],
   ['Expertise', 'skills'],
   ['Experience', 'experience'],
   ['Projects', 'projects'],
-  ['AI Lab', 'lab'],
   ['Insights', 'insights'],
   ['Contact', 'contact'],
   ['Submit Opportunity', 'opportunity'],
@@ -51,13 +53,21 @@ function Header() {
     }}>
       <div className="shell header-inner">
         <Brand />
+        <ThemeToggle />
         <button type="button" id="menu-toggle" className="menu-toggle" aria-expanded={open} aria-controls="site-nav" aria-label={open ? 'Close navigation' : 'Open navigation'} onClick={() => setOpen(!open)}>
           {open ? <X /> : <Menu />}
         </button>
         <nav id="site-nav" className={open ? 'site-nav open' : 'site-nav'} aria-label="Main navigation">
           {navigation.map(([label, id]) => (
             <a key={id} href={'#' + id} className={id === 'opportunity' ? 'nav-contact' : undefined}
-              aria-current={active === id ? 'location' : undefined} onClick={() => setOpen(false)}>
+              aria-current={active === id ? 'location' : undefined} onClick={() => {
+                if (open) {
+                  const destination = document.getElementById(id)
+                  destination.tabIndex = -1
+                  destination.focus({ preventScroll: true })
+                  setOpen(false)
+                }
+              }}>
               {label}
             </a>
           ))}
@@ -67,15 +77,11 @@ function Header() {
   )
 }
 
-function AiSymbol() {
+function ResumeLink({ className }) {
   return (
-    <div className="hero-art" aria-hidden="true">
-      <div className="ai-orbit ai-orbit-outer" />
-      <div className="ai-orbit ai-orbit-inner" />
-      <div className="ai-chip">
-        <span className="ai-chip-face">AI</span>
-      </div>
-    </div>
+    <a className={className} href={import.meta.env.BASE_URL + 'Venkat-Akula-Resume.pdf'} download="Venkat-Akula-Resume.pdf">
+      <Download size={18} aria-hidden="true" /><span>Download résumé (PDF)</span>
+    </a>
   )
 }
 
@@ -87,12 +93,14 @@ function Hero() {
         <h1 id="hero-title">Venkat <span>Akula<span className="hero-period">.</span></span></h1>
         <p className="hero-intro">I build enterprise AI systems that teams can evaluate, deploy, and operate.</p>
         <p className="hero-description">Generative AI, agentic workflows, and retrieval-augmented generation on cloud-native architecture.</p>
+        <p className="availability"><span className="status-dot" aria-hidden="true" /> Open to opportunities</p>
         <div className="hero-actions">
           <a className="button primary" href="#projects">View projects <ArrowDownRight size={18} /></a>
           <a className="button secondary" href="#opportunity">Submit an opportunity <ArrowUpRight size={18} /></a>
+          <ResumeLink className="button secondary" />
         </div>
       </div>
-      <AiSymbol />
+      <MonogramCube />
       <dl className="career-highlights" aria-label="Career highlights">
         <div><dt>Enterprise engineering</dt><dd>11+ years</dd></div>
         <div><dt>Cloud platforms</dt><dd>Azure, AWS, GCP</dd></div>
@@ -133,7 +141,7 @@ function ProjectCard({ project, icon: Icon, study }) {
           <h4>Engineering challenge</h4><p>{study.challenge}</p>
           <h4>What I worked on</h4><p>{project.details}</p>
           <h4>Conceptual architecture</h4>
-          <ol className="architecture">{study.architecture.map(stage => <li key={stage}>{stage}</li>)}</ol>
+          <Architecture project={project.title} stages={study.architecture} />
           <h4>Security and validation</h4><p>{study.safeguards}</p>
           <h4>Outcome</h4><p>{study.outcome}</p>
           <h4>Engineering takeaway</h4><p>{study.lesson}</p>
@@ -220,12 +228,32 @@ function Insights() {
   )
 }
 
+function RecruiterQuickView() {
+  return (
+    <section className="shell section recruiter-quick-view" id="recruiter" aria-labelledby="recruiter-title">
+      <SectionHeading id="recruiter-title" label="Recruiter quick view" title="AI engineering at a glance" />
+      <div>
+        <dl className="recruiter-facts">
+          <div><dt>Experience</dt><dd>11+ years in software, data, and AI engineering</dd></div>
+          <div><dt>Focus</dt><dd>Agentic AI, RAG, LLM evaluation, and production ML</dd></div>
+          <div><dt>Cloud experience</dt><dd>Azure for donor search, GCP for loan risk modeling, and AWS for public services</dd></div>
+        </dl>
+        <div className="hero-actions">
+          <a href="#opportunity" className="button primary">Submit a role <ArrowUpRight size={17} /></a>
+          <a href="#experience" className="button secondary">View experience</a>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function Contact() {
   return (
     <section className="shell section" id="contact" aria-labelledby="contact-title">
       <div className="contact-panel">
         <SectionHeading id="contact-title" label="Contact" title="Let’s connect">Reach out about AI engineering roles or projects.</SectionHeading>
         <div className="contact-links">
+          <ResumeLink />
           <a href={'mailto:' + person.email}><Mail size={19} /><span>{person.email}</span><ArrowUpRight size={17} /></a>
           <a href={'tel:' + person.phone.replaceAll(' ', '')}><Phone size={19} /><span>{person.phone}</span><ArrowUpRight size={17} /></a>
           <a href={person.linkedin}><BriefcaseBusiness size={19} /><span>LinkedIn</span><ArrowUpRight size={17} /></a>
@@ -243,11 +271,11 @@ export default function App() {
       <Header />
       <main id="main">
         <Hero />
+        <RecruiterQuickView />
         <About />
         <Skills />
         <Experience />
         <Projects />
-        <Lab />
         <Insights />
         <Contact />
         <Opportunity />
