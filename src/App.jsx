@@ -4,6 +4,7 @@ import { caseStudies, experience, insights, person, projects, skills } from './c
 import Opportunity from './Opportunity'
 import Architecture from './Architecture'
 import ThemeToggle from './ThemeToggle'
+import MonogramCube from './MonogramCube'
 
 const navigation = [
   ['Home', 'home'],
@@ -76,19 +77,6 @@ function Header() {
   )
 }
 
-function AiSymbol() {
-  return (
-    <div className="hero-art" aria-hidden="true">
-      <div className="ai-signal" />
-      <div className="ai-orbit ai-orbit-outer" />
-      <div className="ai-orbit ai-orbit-inner" />
-      <div className="ai-chip">
-        <span className="ai-chip-face">AI</span>
-      </div>
-    </div>
-  )
-}
-
 function ResumeLink({ className }) {
   return (
     <a className={className} href={import.meta.env.BASE_URL + 'Venkat-Akula-Resume.pdf'} download="Venkat-Akula-Resume.pdf">
@@ -112,7 +100,7 @@ function Hero() {
           <ResumeLink className="button secondary" />
         </div>
       </div>
-      <AiSymbol />
+      <MonogramCube />
       <dl className="career-highlights" aria-label="Career highlights">
         <div><dt>Enterprise engineering</dt><dd>11+ years</dd></div>
         <div><dt>Cloud platforms</dt><dd>Azure, AWS, GCP</dd></div>

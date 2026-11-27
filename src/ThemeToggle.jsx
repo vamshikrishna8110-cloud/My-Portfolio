@@ -8,7 +8,7 @@ export default function ThemeToggle() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = light ? 'light' : 'dark'
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', light ? '#f7f9fd' : '#000000')
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', light ? '#f3f7f4' : '#0B0F0E')
   }, [light])
 
   function toggle() {
