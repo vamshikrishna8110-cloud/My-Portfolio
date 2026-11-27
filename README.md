@@ -40,3 +40,9 @@ The form uses the supplied Formspree endpoint `https://formspree.io/f/mbgoejnw`.
 To switch forms, add the replacement public endpoint (`https://formspree.io/f/<form-id>`) as the repository Actions variable `VITE_OPPORTUNITY_ENDPOINT` under **Settings → Secrets and variables → Actions → Variables**. For local development, put it in `.env.local` and restart Vite. An invalid override disables submission. The downloaded offline preview also disables submission. Never put API keys in Vite variables.
 
 After publishing, submit a clearly labeled test from the Pages URL and verify the notification arrives in the recipient inbox. Confirm that Reply-To is correct and that rejected submissions preserve entered values. The confirmation on the site reports provider acceptance. Verify email delivery separately.
+
+## Automated browser checks
+
+Run `npx playwright install chromium`, then `npm run build` and `npm test`. To use an existing Chromium executable, set `PORTFOLIO_CHROMIUM` to its path. Playwright starts a production preview and intercepts Formspree requests with synthetic responses. The Pages workflow runs lint, build and these checks before uploading the deployment artifact.
+
+The downloadable PDF in `public/Venkat-Akula-Resume.pdf` is a conversion of the supplied résumé. The AI Lab uses a local synonym dictionary for concept search, document excerpts for cited Q&A, scripted agent scenarios, and token-overlap evaluation. It requires no external model or credentials.

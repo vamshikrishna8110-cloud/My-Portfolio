@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { ArrowRight, Search, Workflow } from 'lucide-react'
+import { ArrowRight, ClipboardCheck, FileText, Search, Workflow } from 'lucide-react'
+import { evaluateAnswer, extractAnswer, retrieve } from './lab-retrieval'
 
 const documents = [
   { title: 'Access policy', body: 'Contractors request a sponsor and approval from the system owner before receiving access. Review contractor access every 90 days.' },
@@ -7,17 +8,72 @@ const documents = [
   { title: 'Release checklist', body: 'Before deployment, verify health checks, confirm the release owner and document the rollback plan. Review error rates after rollout.' },
   { title: 'Data retention', body: 'Keep synthetic lab logs for 30 days. Delete expired logs during the next scheduled cleanup.' },
 ]
-const stopWords = new Set(['a', 'an', 'are', 'do', 'for', 'how', 'i', 'in', 'is', 'the', 'to', 'what', 'who'])
-const words = text => [...new Set(text.toLowerCase().match(/[a-z0-9]+/g) ?? [])]
-
 const scenarios = {
   lookup: ['Classify as a guidance request', 'Search the sample knowledge base', 'Return a cited answer for review'],
   restricted: ['Classify as a restricted data request', 'Check the simulated authorization policy', 'Block the tool call and explain the decision'],
   change: ['Classify as a change request', 'Prepare a proposed action', 'Pause for human approval'],
 }
 
+function DocumentDemo() {
+  const [document, setDocument] = useState(documents[0].body + '\n' + documents[2].body)
+  const [question, setQuestion] = useState('When do we review vendor permissions?')
+  const [answer, setAnswer] = useState(null)
+
+  return (
+    <article className="project lab-card">
+      <span className="icon-box"><FileText size={23} /></span>
+      <h3>RAG document Q&amp;A</h3>
+      <p className="card-description">Local extractive demo. It retrieves and quotes a passage from your text. It makes no model calls.</p>
+      <form className="lab-controls" onSubmit={event => {
+        event.preventDefault()
+        setAnswer(extractAnswer(question, document) ?? false)
+      }}>
+        <label className="field">Sample document<textarea rows={4} value={document} onChange={event => { setDocument(event.target.value); setAnswer(null) }} maxLength={6000} required /></label>
+        <label className="field">Question<input value={question} onChange={event => { setQuestion(event.target.value); setAnswer(null) }} maxLength={250} required /></label>
+        <button className="button secondary" type="submit">Find cited answer <ArrowRight size={16} /></button>
+      </form>
+      <div className="lab-result" aria-live="polite">
+        {answer && <blockquote><cite>{answer.title}</cite><p>{answer.body}</p></blockquote>}
+        {answer === false && <p>No supporting passage found in this document.</p>}
+      </div>
+    </article>
+  )
+}
+
+const reference = 'Review contractor access every 90 days.'
+
+function EvaluationDemo() {
+  const [candidate, setCandidate] = useState(reference)
+  const [metrics, setMetrics] = useState(null)
+  const percent = value => Math.round(value * 100) + '%'
+
+  return (
+    <article className="project lab-card">
+      <span className="icon-box"><ClipboardCheck size={23} /></span>
+      <h3>LLM evaluation workbench</h3>
+      <p className="card-description">Score an example output in your browser. These token-overlap metrics are proxies for quality and use no LLM judge.</p>
+      <blockquote className="lab-result"><p>Test question: How often is contractor access reviewed?</p><p>Reference: {reference}</p></blockquote>
+      <form className="lab-controls" onSubmit={event => {
+        event.preventDefault()
+        setMetrics(evaluateAnswer(candidate, reference, documents[0].body))
+      }}>
+        <label className="field">Candidate answer<textarea rows={3} value={candidate} onChange={event => { setCandidate(event.target.value); setMetrics(null) }} maxLength={1000} required /></label>
+        <button className="button secondary" type="submit">Evaluate answer <ArrowRight size={16} /></button>
+      </form>
+      <div className="lab-result" aria-live="polite">
+        {metrics && <dl className="recruiter-facts">
+          <div><dt>Reference token F1</dt><dd>{percent(metrics.referenceF1)}</dd></div>
+          <div><dt>Evidence token coverage</dt><dd>{percent(metrics.evidenceCoverage)}</dd></div>
+          <div><dt>Local scoring time</dt><dd>{metrics.milliseconds.toFixed(2)} ms</dd></div>
+        </dl>}
+      </div>
+    </article>
+  )
+}
+
 export default function Lab() {
   const [query, setQuery] = useState('How do contractors request access?')
+  const [semantic, setSemantic] = useState(true)
   const [results, setResults] = useState(null)
   const [scenario, setScenario] = useState('lookup')
   const [step, setStep] = useState(0)
@@ -25,11 +81,7 @@ export default function Lab() {
 
   function search(event) {
     event.preventDefault()
-    const terms = words(query).filter(word => !stopWords.has(word))
-    setResults(documents.map(doc => {
-      const tokens = words(doc.title + ' ' + doc.body)
-      return { ...doc, score: terms.filter(term => tokens.includes(term)).length }
-    }).filter(doc => doc.score > 0).sort((a, b) => b.score - a.score))
+    setResults(retrieve(query, documents, { semantic }))
   }
 
   return (
@@ -37,15 +89,16 @@ export default function Lab() {
       <div className="section-heading">
         <p className="eyebrow">Interactive demos</p>
         <h2 id="lab-title">AI Lab</h2>
-        <p className="section-description">Explore retrieval and agent routing with synthetic data. Both demos run locally in your browser.</p>
+        <p className="section-description">Explore retrieval, document Q&A, agent workflows, and answer evaluation with synthetic data. All examples run locally and require no credentials.</p>
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         <article className="project lab-card">
           <span className="icon-box"><Search size={23} /></span>
-          <h3>Search with citations</h3>
-          <p className="card-description">Rank sample policies by matching keywords and inspect the original source.</p>
+          <h3>Semantic search with citations</h3>
+          <p className="card-description">Compare exact keywords with synonym-aware concept matching on a small sample corpus. The semantic mode uses a curated vocabulary.</p>
           <form className="lab-controls" onSubmit={search}>
-            <label className="field">Search the sample policies<input value={query} onChange={event => setQuery(event.target.value)} maxLength={160} required /></label>
+            <label className="field">Search the sample policies<input value={query} onChange={event => { setQuery(event.target.value); setResults(null) }} maxLength={160} required /></label>
+            <label className="lab-option"><input type="checkbox" checked={semantic} onChange={event => { setSemantic(event.target.checked); setResults(null) }} /> Match related concepts</label>
             <button className="button secondary" type="submit">Search documents <ArrowRight size={16} /></button>
           </form>
           <div aria-live="polite" className="lab-result">
@@ -56,7 +109,7 @@ export default function Lab() {
         <article className="project lab-card">
           <span className="icon-box"><Workflow size={23} /></span>
           <h3>Agent routing simulator</h3>
-          <p className="card-description">Step through how a simulated agent handles retrieval, authorization, and human review.</p>
+          <p className="card-description">Run scripted scenarios for retrieval, authorization, and human review. The simulator executes no real tools.</p>
           <div className="lab-controls">
             <label className="field">Scenario
               <select value={scenario} onChange={event => { setScenario(event.target.value); setStep(0) }}>
@@ -69,6 +122,8 @@ export default function Lab() {
           </div>
           <ol aria-live="polite" className="lab-result route-steps">{steps.slice(0, step).map(item => <li key={item}>{item}</li>)}</ol>
         </article>
+        <DocumentDemo />
+        <EvaluationDemo />
       </div>
     </section>
   )
