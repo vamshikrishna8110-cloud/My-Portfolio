@@ -1,6 +1,6 @@
 # Venkat Akula · Portfolio
 
-A static portfolio for Venkat Laxmi Narsimha Krishna Vamshi Akula, Senior AI Engineer. Built with React, Vite, Tailwind CSS, and Lucide. Fonts and artwork are served locally with the site.
+A static portfolio for Venkat Laxmi Narsimha Krishna Vamshi Akula, Senior AI Engineer. Built with React, Vite, Tailwind CSS, and Lucide. Fonts are served locally, and the hero animation is built with CSS.
 
 ## Local development
 

@@ -39,6 +39,18 @@ function Header() {
   )
 }
 
+function AiSymbol() {
+  return (
+    <div className="hero-art" aria-hidden="true">
+      <div className="ai-orbit ai-orbit-outer" />
+      <div className="ai-orbit ai-orbit-inner" />
+      <div className="ai-chip">
+        <span className="ai-chip-face">AI</span>
+      </div>
+    </div>
+  )
+}
+
 function Hero() {
   return (
     <section id="home" className="shell hero" aria-labelledby="hero-title">
@@ -52,9 +64,7 @@ function Hero() {
           <a className="button secondary" href="#contact">Get in touch <ArrowUpRight size={18} /></a>
         </div>
       </div>
-      <div className="hero-art">
-        <img src={import.meta.env.BASE_URL + 'ai-architecture.webp'} alt="" fetchPriority="high" />
-      </div>
+      <AiSymbol />
       <div className="hero-bottom">
         <a href="#projects"><ArrowDown size={15} /> Selected work</a>
         <span>Retrieval <b>/</b> Evaluation <b>/</b> Deployment</span>
