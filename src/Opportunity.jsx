@@ -7,31 +7,22 @@ const configuredEndpoint = import.meta.env.VITE_OPPORTUNITY_ENDPOINT || defaultE
 const isHosted = location.protocol === 'https:' || location.protocol === 'http:'
 const endpoint = isHosted && /^https:\/\/formspree\.io\/f\/[a-z0-9]+$/i.test(configuredEndpoint) ? configuredEndpoint : ''
 const fields = [
-  { name: 'name', label: 'Recruiter / vendor name', required: true, autoComplete: 'name' },
-  { name: 'company', label: 'Company / staffing agency', required: true, autoComplete: 'organization' },
-  { name: 'email', label: 'Business email', required: true, type: 'email', autoComplete: 'email' },
-  { name: 'phone', label: 'Contact phone', required: true, type: 'tel', autoComplete: 'tel' },
-  { name: 'role', label: 'Job title / role', required: true },
-  { name: 'client', label: 'Client name' },
-  { name: 'location', label: 'Location' },
-  { name: 'arrangement', label: 'Work arrangement', options: ['Not specified', 'Remote', 'Hybrid', 'Onsite'] },
-  { name: 'engagement', label: 'Engagement type', options: ['Not specified', 'C2C', '1099', 'W2', 'C2H', 'Full-time', 'Other'] },
-  { name: 'compensation', label: 'Rate / salary and duration' },
-  { name: 'posting', label: 'Job posting link', type: 'url', wide: true },
-  { name: 'description', label: 'Job description', required: true, multiline: true, wide: true },
+  { name: 'name', label: 'Name', autoComplete: 'name' },
+  { name: 'email', label: 'Email', type: 'email', autoComplete: 'email' },
+  { name: 'role', label: 'Position' },
+  { name: 'phone', label: 'Contact number', type: 'tel', autoComplete: 'tel' },
+  { name: 'description', label: 'Description', multiline: true },
 ]
 
 function Field({ field }) {
-  const { name, label, required, type = 'text', autoComplete, options, multiline, wide } = field
+  const { name, label, type = 'text', autoComplete, multiline } = field
   return (
-    <label className={wide ? 'field field-wide' : 'field'}>
-      <span>{label}{required && <span aria-hidden="true"> *</span>}</span>
-      {options ? (
-        <select name={name}>{options.map(option => <option key={option}>{option}</option>)}</select>
-      ) : multiline ? (
-        <textarea name={name} required={required} rows={5} maxLength={6000} />
+    <label className={multiline ? 'field field-wide' : 'field'}>
+      <span>{label}</span>
+      {multiline ? (
+        <textarea name={name} required rows={5} maxLength={6000} />
       ) : (
-        <input name={name} type={type} required={required} autoComplete={autoComplete} maxLength={type === 'url' ? 2048 : 254} />
+        <input name={name} type={type} required autoComplete={autoComplete} maxLength={254} />
       )}
     </label>
   )
@@ -74,12 +65,11 @@ export default function Opportunity() {
         {!endpoint && <p className="section-description">Online submissions are currently unavailable. <a className="text-link" href={'mailto:' + person.email}>Email me about the opportunity</a>.</p>}
       </div>
       <form className="opportunity-form" action={endpoint || undefined} method="post" onSubmit={submit} aria-label="Job opportunity" aria-busy={status === 'sending'}>
-        <p className="form-note">Fields marked * are required.</p>
+        <p className="form-note">All fields are required.</p>
         <fieldset className="form-grid" disabled={!endpoint || status === 'sending'}>
           <legend className="sr-only">Opportunity details</legend>
           {fields.map(field => <Field key={field.name} field={field} />)}
           <input className="hidden" type="text" name="_gotcha" tabIndex={-1} autoComplete="off" aria-hidden="true" />
-          <label className="consent field-wide"><input type="checkbox" name="consent" value="yes" required /> <span>I agree to be contacted about this opportunity. <span aria-hidden="true">*</span></span></label>
           <button className="button primary field-wide form-submit" type="submit">{status === 'sending' ? 'Submitting…' : 'Submit Job Opportunity'} <ArrowUpRight size={17} /></button>
         </fieldset>
         <p className="form-feedback" role="status">{status === 'success' && 'Thank you for sharing this opportunity. Your details have been submitted successfully.'}</p>
