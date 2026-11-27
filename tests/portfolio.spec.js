@@ -116,20 +116,6 @@ test('theme is keyboard accessible and persists across reloads', async ({ page }
   await expect(toggle).toHaveAttribute('aria-pressed', 'true')
 })
 
-test('local AI Lab returns sources, runs agent steps, and evaluates an answer', async ({ page }) => {
-  await page.goto('./')
-  const lab = page.locator('#lab')
-  await lab.getByLabel('Search the sample policies').fill('vendor permissions')
-  await lab.getByRole('button', { name: 'Search documents' }).click()
-  await expect(lab.getByText('Access policy', { exact: true })).toBeVisible()
-  await lab.getByRole('button', { name: 'Find cited answer' }).click()
-  await expect(lab.getByText('Review contractor access every 90 days.', { exact: true }).last()).toBeVisible()
-  await lab.getByRole('button', { name: 'Run next step' }).click()
-  await expect(lab.getByText('Classify as a guidance request')).toBeVisible()
-  await lab.getByRole('button', { name: 'Evaluate answer' }).click()
-  await expect(lab.getByText('100%', { exact: true })).toHaveCount(2)
-})
-
 test('AI chip scan animates and respects reduced motion', async ({ page }) => {
   const scan = page.locator('.ai-chip-face')
   await page.emulateMedia({ reducedMotion: 'no-preference' })

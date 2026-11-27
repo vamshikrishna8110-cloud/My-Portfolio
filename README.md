@@ -21,7 +21,7 @@ npm run build
 npm run preview
 ```
 
-Open http://localhost:4173/My-Portfolio/. The build output is in `dist/`. Review content in `src/content.js` and section copy in `src/App.jsx`. The AI Lab uses synthetic data and runs entirely in the browser. Add a GitHub profile URL as `person.github` once confirmed.
+Open http://localhost:4173/My-Portfolio/. The build output is in `dist/`. Review content in `src/content.js` and section copy in `src/App.jsx`. Add a GitHub profile URL as `person.github` once confirmed.
 
 ## Publish to GitHub Pages
 
@@ -45,4 +45,4 @@ After publishing, submit a clearly labeled test from the Pages URL and verify th
 
 Run `npx playwright install chromium`, then `npm run build` and `npm test`. To use an existing Chromium executable, set `PORTFOLIO_CHROMIUM` to its path. Playwright starts a production preview and intercepts Formspree requests with synthetic responses. The Pages workflow runs lint, build and these checks before uploading the deployment artifact.
 
-The downloadable PDF in `public/Venkat-Akula-Resume.pdf` is a conversion of the supplied résumé. The AI Lab uses a local synonym dictionary for concept search, document excerpts for cited Q&A, scripted agent scenarios, and token-overlap evaluation. It requires no external model or credentials.
+The downloadable PDF in `public/Venkat-Akula-Resume.pdf` is a conversion of the supplied résumé.

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, Boxes, BrainCircuit, ChevronDown, Cloud, Code2, Database, Download, GitFork, GraduationCap, BriefcaseBusiness, Mail, Menu, Network, Phone, X } from 'lucide-react'
 import { caseStudies, experience, insights, person, projects, skills } from './content'
-import Lab from './Lab'
 import Opportunity from './Opportunity'
 import Architecture from './Architecture'
 import ThemeToggle from './ThemeToggle'
@@ -13,7 +12,6 @@ const navigation = [
   ['Expertise', 'skills'],
   ['Experience', 'experience'],
   ['Projects', 'projects'],
-  ['AI Lab', 'lab'],
   ['Insights', 'insights'],
   ['Contact', 'contact'],
   ['Submit Opportunity', 'opportunity'],
@@ -290,7 +288,6 @@ export default function App() {
         <Skills />
         <Experience />
         <Projects />
-        <Lab />
         <Insights />
         <Contact />
         <Opportunity />

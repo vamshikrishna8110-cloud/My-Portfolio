@@ -241,13 +241,6 @@ details p { margin-top: 5px; }
 .career-highlights dd { color: var(--ink); font-family: var(--display); font-size: 19px; font-weight: 650; }
 .career-highlights dt { color: var(--muted); font-size: 13px; }
 .case-study h4 { color: var(--ink); font-weight: 650; margin-top: 15px; }
-.lab-card .icon-box { margin-bottom: 14px; }
-.lab-controls { display: grid; gap: 10px; margin-top: 16px; }
-.lab-controls button { justify-self: start; }
-.lab-result { color: var(--muted); }
-.lab-result:not(:empty) { margin-top: 14px; }
-.lab-result blockquote, .route-steps li { margin-top: 7px; padding: 8px 12px; border-left: 2px solid var(--accent); background: #17263b; }
-.lab-result cite { color: var(--accent); font-style: normal; font-weight: 600; }
 .insight p { margin-top: 8px; }
 .opportunity-form { min-width: 0; padding: clamp(14px, 3vw, 28px); border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
 .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; border: 0; padding: 0; min-width: 0; }
@@ -306,9 +299,7 @@ details p { margin-top: 5px; }
 }
 [data-theme="light"] .brand span,
 [data-theme="light"] .icon-box,
-[data-theme="light"] .tags li,
-[data-theme="light"] .lab-result blockquote,
-[data-theme="light"] .route-steps li { background: #e9f1fd; color: #244466; }
+[data-theme="light"] .tags li { background: #e9f1fd; color: #244466; }
 [data-theme="light"] .primary { color: #fff; }
 [data-theme="light"] .primary:hover { background: #103c71; }
 [data-theme="light"] .project:hover,
@@ -328,5 +319,3 @@ details p { margin-top: 5px; }
 @media (max-width: 360px) {
   .brand { gap: 7px; font-size: 14px; }
 }
-.lab-option { display: flex; align-items: center; gap: 8px; min-height: 32px; font-size: 14px; }
-.lab-option input { accent-color: var(--accent); }
